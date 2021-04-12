@@ -3,6 +3,10 @@
 # We will learn how to use the six main functions of dplyr to wrangle a wild dataset into a tidy tibble
 # These functions are: select(), filter(), arrange(), mutate(), summarise(), and group_by().
 
+################################################################################
+#################### SLICE 1
+################################################################################
+
 library(tidyverse)
 
 # Import the global tuna catches dataset from Github
@@ -46,6 +50,9 @@ col_selection
 col_selection <- data_tuna %>% select(Country,Stock,`Gear Type`,everything())
 col_selection
 
+################################################################################
+#################### SLICE 2
+################################################################################
 
 ### `filter`
 
@@ -62,6 +69,10 @@ data_tuna <- dat %>% select(!starts_with("S_20")) %>%
   pivot_longer(all_of(as.character(2000:2010)), names_to = "Year",values_to = "Catches") %>%
   filter(!near(Catches,0))
 data_tuna
+
+################################################################################
+#################### SLICE 3
+################################################################################
 
 ### `mutate`
 
@@ -126,6 +137,9 @@ data_tuna <- dat %>% select(!starts_with("S_20")) %>%
   )))
 data_tuna
 
+################################################################################
+#################### SLICE 4
+################################################################################
 
 ### `summarise` and `group_by` 
 # summarise() will create a new tibble with summarising values.
@@ -153,6 +167,10 @@ data_summaries <- data_tuna %>% group_by(Stock, Country, Year) %>%
 # Let's obtain another database with the total catch for all years:
 global_summaries <- data_tuna %>% group_by(Stock, Country) %>% 
   summarise("Total_catch" = sum(Catches,na.rm = T),"Total_individuals" = sum(Individuals,na.rm = T), N = n())
+
+################################################################################
+#################### SLICE 5
+################################################################################
 
 ### `arrange` 
 # arrange() works similarly to filter() except that instead of selecting rows, it changes their order.
@@ -185,6 +203,10 @@ worst_catcher <- global_summaries %>% group_by(Stock) %>%
 countries_fishing <- global_summaries %>% group_by(Stock) %>% 
   summarise(count = n()) %>%
   arrange(desc(count))
+
+################################################################################
+#################### SLICE 6
+################################################################################
 
 ### Additional dplyr verbs
 
@@ -231,6 +253,11 @@ catch_sample <- data_tuna %>% slice_sample(n=30)
 
 data_tuna %>% slice_sample(n=15) %>% pull(Country)
 
+
+################################################################################
+#################### SLICE 7
+################################################################################
+
 ######################################
 ### WORKING WITH TWO RELATED DATABASES
 ######################################
@@ -266,6 +293,10 @@ summary_vessels <- tidy_data_vessels %>% group_by(flag_gfw) %>%
   summarise(Total_effort = sum(Effort, na.rm=T), N = n())
 summary_vessels
 
+################################################################################
+#################### SLICE 8
+################################################################################
+
 # On the other hand, we have the summary table of tuna catches
 global_summaries_by_country
 
@@ -289,6 +320,11 @@ summary_vessels$flag_gfw
 
 # Now we can mutate the country column in the summary_tuna table:
 summary_tuna <- summary_tuna %>% mutate(Country_code = countrycode(countryname(Country),origin="country.name",destination="iso3c"))
+summary_tuna
+
+################################################################################
+#################### SLICE 9
+################################################################################
 
 # Finally, we have two datasets with a valid unique key (Country_code and flag_gfw)
 # We are going to left-join the table of fishing efforts to the table of tuna catches

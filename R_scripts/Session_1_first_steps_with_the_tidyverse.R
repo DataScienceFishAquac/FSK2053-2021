@@ -244,6 +244,10 @@ tidy_data <- wide_data %>%
   gather("year","fishing_hours",-c(mmsi,flag_gfw,vessel_class_gfw,tonnage_gt_gfw)) %>% 
   mutate(year = gsub("fishing_hours_","",year))  %>% drop_na()
 
+################################################################################
+#################### SLICE 1
+################################################################################
+
 
 ### `spread`
 
@@ -261,6 +265,9 @@ new_wide_data
 # This is useful, for example, if we want to select only the vessels that worked during all the years in the record
 new_wide_data_all <- tidy_data %>% spread(year, fishing_hours) %>% drop_na()
 
+################################################################################
+#################### SLICE 2
+################################################################################
 
 ### `pivot_longer` and `pivot_wider`
 
@@ -273,8 +280,8 @@ tidy_data <- wide_data %>% gather("year","fishing_hours",all_of(years))  %>%
 # We can get the same result using pivot_longer().
 # We need three parameters:
 # The set of columns whose names are values, not variables. In this example, those columns are all_of(years)
-# The name of the variable to move the column names to. Here it is year.
-# The name of the variable to move the column values to. Here it’s fishing_hours.
+# The name of the variable to move the column names to. Here it is "year".
+# The name of the variable to move the column values to. Here it’s "fishing_hours".
 
 tidy_data <- wide_data %>% pivot_longer(all_of(years),names_to = "year", values_to = "fishing_hours")  %>% drop_na()
 # We add the mutate command for changing the year column
@@ -292,6 +299,11 @@ new_wide_data <- tidy_data %>% pivot_wider(names_from = year, values_from=fishin
 # Both are designed to be simpler and can handle more cases than gather and spread. 
 # RStudio highly recommends to use the new functions, although gather() and spread() are not going away but will not be actively developed.
 
+
+################################################################################
+#################### SLICE 3
+################################################################################
+
 ### `separate`
 
 # The data wrangling shown above was simple compared to what is usually required. 
@@ -307,7 +319,7 @@ url <- "https://raw.githubusercontent.com/DataScienceFishAquac/FSK2053-2021/main
 raw_dat <- read_csv(url)
 head(raw_dat)
 
-#First note that the data is in wide format. Second, note that now there are values for two variables 
+# First note that the data is in wide format. Second, note that now there are values for two variables 
 # with the column names encoding which column represents which variable. 
 # We can start the data wrangling with the `gather` function, We will call the variable `key`, the default:
 
@@ -343,6 +355,7 @@ dat_new <- dat_fert %>% separate(key,
 # However, if we read the `separate` help file we find that a better approach is to merge the last two variables
 # when there is an extra separation:
 dat_new <- dat_fert %>% separate(key, c("year", "variable_name"), sep = "_", extra = "merge")
+dat_new
 
 # This achieves the separation we wanted. The dataset is almost in tidy format. 
 # But the column 'value' is merging two variables.
@@ -350,15 +363,19 @@ dat_new <- dat_fert %>% separate(key, c("year", "variable_name"), sep = "_", ext
 # So we want to create a column for each variable. We can use the `spread` function:
 dat_new <- dat_fert %>% separate(key, c("year", "variable_name"), sep = "_", extra = "merge") %>%
   spread(variable_name, value) 
-
+dat_new
 # The data is now in tidy format with one row for each observation with three variables: `year`, `fertility` and `life expectancy`.
 
-# We can plot the data:
+# Now we can plot the data:
 dat_new %>% ggplot(aes(x=year),color = country,) +
   geom_line(aes(y = life_expectancy, group=country, colour = country))  +
   geom_line(aes(y = fertility/.1, group=country,colour = country, linetype="fertility"),linetype="dashed") +
   scale_y_continuous(sec.axis = sec_axis(~.*.1, name = "fertility")) +
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+
+################################################################################
+#################### SLICE 4
+################################################################################
 
 ### `unite`
 
@@ -367,11 +384,13 @@ dat_new %>% ggplot(aes(x=year),color = country,) +
 
 dat_new <- dat_fert %>% 
   separate(key, c("year", "first_variable_name", "second_variable_name"), fill = "right")  
+dat_new
 
 # We can achieve the same final result by uniting the second and third column like this:
 dat_new <- dat_fert  %>% 
   separate(key, c("year", "first_variable_name", "second_variable_name"), fill = "right") %>%
   unite(variable_name, first_variable_name, second_variable_name, sep = "_")
+dat_new
 
 # Then spreading the columns:
 dat_new <- dat_fert   %>% 
@@ -379,4 +398,4 @@ dat_new <- dat_fert   %>%
   unite(variable_name, first_variable_name, second_variable_name, sep = "_") %>%
   spread(variable_name, value) %>%
   rename(fertility = fertility_NA)
-
+dat_new
