@@ -1,0 +1,26 @@
+Identification Code_Species_reported
+1415	Atlantic cod
+1426	Atlantic cod
+1446	Atlantic cod
+1452a	haddock
+1452b	haddock
+1470	haddock
+1747	Atlantic cod
+1763a	Alaskan pollock
+1763b	Alaskan pollock
+1765	cod
+1812	haddock
+1813	hake (M. capensis)
+1847a	haddock
+1847b	haddock
+1848	whiting
+1851	haddock
+1868	haddock
+1886a	cod
+1886b	cod
+1888	haddock
+1889	Atlantic cod
+1892a	cod
+1892b	cod
+1975	Atlantic cod
+1977	haddock
